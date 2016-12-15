@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.domain.repository.StoredTransactionTokenRepository">
+
+        <resultMap id="storedTransactionTokenresultMap" type="StoredTransactionToken">
+            <id property="tokenName" column="token_name" />
+            <id property="tokenKey" column="token_key" />
+            <result property="tokenValue" column="token_value" />
+            <result property="createdAt" column="created_at" />
+        </resultMap>
+        <select id="findOneForUpdate" resultMap="storedTransactionTokenresultMap">
+        <![CDATA[
+            SELECT
+                token_name,
+                token_key,
+                token_value,
+                created_at
+            FROM
+                transaction_token
+            WHERE
+                token_name = #{tokenName}
+            AND
+                token_key = #{tokenKey}
+            FOR UPDATE
+        ]]>
+        </select>
+        <insert id="insert" parameterType="StoredTransactionToken">
+        <![CDATA[
+            INSERT INTO transaction_token
+            (
+                token_name,
+                token_key,
+                token_value,
+                created_at
+            )
+            VALUES
+            (
+                #{tokenName},
+                #{tokenKey},
+                #{tokenValue},
+                #{createdAt}
+            )
+        ]]>
+        </insert>
+        <delete id="delete">
+        <![CDATA[
+            DELETE FROM transaction_token
+            WHERE
+                token_name = #{tokenName}
+            AND
+                token_key = #{tokenKey}
+        ]]>
+        </delete>
+
+</mapper>
