@@ -24,17 +24,24 @@ public class MyBatisTransactionTokenStore implements TransactionTokenStore {
     @Inject
     JodaTimeDateFactory dateFactory;
 
+    private final int transactionTokenSizePerTokenName;
+
     /**
      * generator for token string
      */
     private final TokenStringGenerator generator;
 
-    public MyBatisTransactionTokenStore(TokenStringGenerator generator) {
+    public MyBatisTransactionTokenStore(int transactionTokenSizePerTokenName, TokenStringGenerator generator) {
+        this.transactionTokenSizePerTokenName = transactionTokenSizePerTokenName;
         this.generator = generator;
     }
 
+    public MyBatisTransactionTokenStore(int transactionTokenSizePerTokenName) {
+        this(transactionTokenSizePerTokenName, new TokenStringGenerator());
+    }
+
     public MyBatisTransactionTokenStore() {
-        this(new TokenStringGenerator());
+        this(10, new TokenStringGenerator());
     }
 
     @Override
@@ -74,8 +81,11 @@ public class MyBatisTransactionTokenStore implements TransactionTokenStore {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public String createAndReserveTokenKey(String tokenName) {
-        return generator.generate(UUID.randomUUID().toString());
+        String newTokenKey = generator.generate(UUID.randomUUID().toString());
+        tokenRepository.deleteOlderThanNLatest(tokenName, transactionTokenSizePerTokenName - 1);
+        return newTokenKey;
     }
 
     @Override

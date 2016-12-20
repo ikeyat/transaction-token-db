@@ -55,8 +55,10 @@
                     <bean class="org.terasoluna.gfw.web.token.transaction.TransactionTokenInfoStore" />
                 </constructor-arg>
                 <constructor-arg>
-                    <!--<bean class="org.terasoluna.gfw.web.token.transaction.HttpSessionTransactionTokenStore" />-->
-                    <bean class="com.example.token.MyBatisTransactionTokenStore" />
+                    <!--<bean class="org.terasoluna.gfw.web.token.transaction.HttpSessionTransactionTokenStore">-->
+                    <bean class="com.example.token.MyBatisTransactionTokenStore">
+                        <constructor-arg value="2" />
+                    </bean>
                 </constructor-arg>
             </bean>
         </mvc:interceptor>

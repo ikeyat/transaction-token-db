@@ -54,5 +54,20 @@
                 token_key = #{tokenKey}
         ]]>
         </delete>
-
+        <delete id="deleteOlderThanNLatest">
+        <![CDATA[
+            DELETE FROM transaction_token
+            WHERE
+                token_name = #{tokenName}
+            AND
+                created_at <= (
+                    SELECT created_at FROM transaction_token
+                    WHERE
+                        token_name = #{tokenName}
+                    ORDER BY created_at DESC
+                    LIMIT 1
+                    OFFSET #{num}
+                )
+        ]]>
+        </delete>
 </mapper>
