@@ -5,94 +5,22 @@
 
 <mapper namespace="com.example.domain.repository.sample.SampleRepository">
 
-<!--
-    <resultMap id="todoResultMap" type="Todo">
-        <id property="todoId" column="todo_id" />
-        <result property="todoTitle" column="todo_title" />
-        <result property="finished" column="finished" />
+    <resultMap id="storedTransactionTokenresultMap" type="StoredTransactionToken">
+        <id property="tokenName" column="token_name" />
+        <id property="tokenKey" column="token_key" />
+        <result property="tokenValue" column="token_value" />
         <result property="createdAt" column="created_at" />
     </resultMap>
-    <select id="findOne" parameterType="string" resultMap="todoResultMap">
-    <![CDATA[
-        SELECT
-            todo_id, 
-            todo_title, 
-            finished, 
-            created_at 
-        FROM
-            todo 
-        WHERE
-            todo_id = #{todoId}
-    ]]>
+    <select id="findAll" resultMap="storedTransactionTokenresultMap">
+        <![CDATA[
+            SELECT
+                token_name,
+                token_key,
+                token_value,
+                created_at
+            FROM
+                transaction_token
+        ]]>
     </select>
-    <select id="findAll" resultMap="todoResultMap">
-    <![CDATA[
-        SELECT
-            todo_id, 
-            todo_title, 
-            finished, 
-            created_at 
-        FROM
-            todo 
-    ]]>
-    </select>
-    <insert id="create" parameterType="Todo">
-    <![CDATA[
-        INSERT INTO todo
-        (
-            todo_id, 
-            todo_title, 
-            finished, 
-            created_at
-        ) 
-        VALUES
-        (
-            #{todoId}, 
-            #{todoTitle}, 
-            #{finished}, 
-            #{createdAt}
-        )
-    ]]>
-    </insert>
-    <update id="update" parameterType="Todo">
-    <![CDATA[
-        UPDATE
-            todo 
-        SET
-            todo_title = #{todoTitle}, 
-            finished = #{finished}, 
-            created_at = #{createdAt} 
-        WHERE
-            todo_id = #{todoId}
-    ]]>
-    </update>
-    <delete id="delete" parameterType="Todo">
-    <![CDATA[
-        DELETE FROM todo 
-        WHERE
-            todo_id = #{todoId}
-    ]]>
-    </delete>
-    <select id="countByFinished" parameterType="boolean" resultType="long">
-    <![CDATA[
-        SELECT
-            COUNT(*)
-        FROM
-            todo 
-        WHERE
-            finished = #{finished}
-    ]]>
-    </select>
-    <select id="exists" parameterType="string" resultType="long">
-    <![CDATA[
-        SELECT
-            COUNT(*)
-        FROM
-            todo 
-        WHERE
-            todo_id = #{todoId}
-    ]]>
-    </select>
--->
 
 </mapper>
