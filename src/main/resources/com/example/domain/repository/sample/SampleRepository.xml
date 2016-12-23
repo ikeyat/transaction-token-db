@@ -17,6 +17,7 @@
                 token_name,
                 token_key,
                 token_value,
+                session_id,
                 created_at
             FROM
                 transaction_token

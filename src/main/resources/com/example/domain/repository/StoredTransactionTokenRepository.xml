@@ -9,6 +9,7 @@
             <id property="tokenName" column="token_name" />
             <id property="tokenKey" column="token_key" />
             <result property="tokenValue" column="token_value" />
+            <result property="sessionId" column="session_id" />
             <result property="createdAt" column="created_at" />
         </resultMap>
         <select id="findOneForUpdate" resultMap="storedTransactionTokenresultMap">
@@ -17,6 +18,7 @@
                 token_name,
                 token_key,
                 token_value,
+                session_id,
                 created_at
             FROM
                 transaction_token
@@ -34,6 +36,7 @@
                 token_name,
                 token_key,
                 token_value,
+                session_id,
                 created_at
             )
             VALUES
@@ -41,6 +44,7 @@
                 #{tokenName},
                 #{tokenKey},
                 #{tokenValue},
+                #{sessionId},
                 #{createdAt}
             )
         ]]>
@@ -60,14 +64,25 @@
             WHERE
                 token_name = #{tokenName}
             AND
+                session_id = #{sessionId}
+            AND
                 created_at <= (
                     SELECT created_at FROM transaction_token
                     WHERE
                         token_name = #{tokenName}
+                    AND
+                        session_id = #{sessionId}
                     ORDER BY created_at DESC
                     LIMIT 1
                     OFFSET #{num}
                 )
         ]]>
+        </delete>
+        <delete id="deleteBySessionId">
+            <![CDATA[
+                DELETE FROM transaction_token
+                WHERE
+                    session_id = #{sessionId}
+            ]]>
         </delete>
 </mapper>

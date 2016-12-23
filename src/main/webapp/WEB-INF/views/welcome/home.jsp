@@ -16,7 +16,12 @@
 
         <table>
             <tr>
-                <td>no</td><td>token name</td><td>token key</td><td>token value</td><td>created at</td>
+                <td>no</td>
+                <td>token name</td>
+                <td>token key</td>
+                <td>token value</td>
+                <td>session id</td>
+                <td>created at</td>
             </tr>
             <c:forEach var="token" items="${tokens}" varStatus="status">
                 <tr>
@@ -24,6 +29,7 @@
                     <td>${token.tokenName}</td>
                     <td>${token.tokenKey}</td>
                     <td>${token.tokenValue}</td>
+                    <td>${token.sessionId}</td>
                     <td>${token.createdAt}</td>
                 </tr>
             </c:forEach>

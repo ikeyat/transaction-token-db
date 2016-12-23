@@ -9,6 +9,7 @@ public class StoredTransactionToken {
     private String tokenName;
     private String tokenKey;
     private String tokenValue;
+    private String sessionId;
     private Date createdAt;
 
     public String getTokenName() {
@@ -33,6 +34,14 @@ public class StoredTransactionToken {
 
     public void setTokenValue(String tokenValue) {
         this.tokenValue = tokenValue;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     public Date getCreatedAt() {

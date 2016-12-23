@@ -20,6 +20,10 @@
         <listener-class>org.terasoluna.gfw.web.logging.HttpSessionEventLoggingListener</listener-class>
     </listener>
 
+    <listener>
+        <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+    </listener>
+
     <filter>
         <filter-name>MDCClearFilter</filter-name>
         <filter-class>org.terasoluna.gfw.web.logging.mdc.MDCClearFilter</filter-class>
@@ -114,8 +118,8 @@
     </error-page>
     
     <session-config>
-        <!-- 30min -->
-        <session-timeout>30</session-timeout>
+        <!-- 1min -->
+        <session-timeout>1</session-timeout>
         <cookie-config>
             <http-only>true</http-only>
             <!-- <secure>true</secure> -->

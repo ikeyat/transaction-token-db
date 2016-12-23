@@ -56,4 +56,6 @@
         <property name="exceptionLogger" ref="exceptionLogger" />
     </bean>
 
+    <!-- Session Destroyed Listener -->
+    <bean id="transactionTokenCleaningListener" class="com.example.token.TransactionTokenCleaningListener" />
 </beans>

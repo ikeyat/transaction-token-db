@@ -2,15 +2,19 @@ package com.example.token;
 
 import com.example.domain.model.StoredTransactionToken;
 import com.example.domain.repository.StoredTransactionTokenRepository;
-import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.terasoluna.gfw.common.date.jodatime.JodaTimeDateFactory;
 import org.terasoluna.gfw.web.token.TokenStringGenerator;
 import org.terasoluna.gfw.web.token.transaction.TransactionToken;
 import org.terasoluna.gfw.web.token.transaction.TransactionTokenStore;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
 /**
@@ -65,7 +69,7 @@ public class MyBatisTransactionTokenStore implements TransactionTokenStore {
 
             tokenRepository.delete(name, key);
             return token.getTokenValue();
-        } catch (CannotAcquireLockException e) {
+        } catch (PessimisticLockingFailureException e) {
             // FIXME
             e.printStackTrace();
         }
@@ -83,9 +87,9 @@ public class MyBatisTransactionTokenStore implements TransactionTokenStore {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public String createAndReserveTokenKey(String tokenName) {
-        String newTokenKey = generator.generate(UUID.randomUUID().toString());
-        tokenRepository.deleteOlderThanNLatest(tokenName, transactionTokenSizePerTokenName - 1);
-        return newTokenKey;
+        String sessionId = getSession().getId();
+        tokenRepository.deleteOlderThanNLatest(tokenName, sessionId, transactionTokenSizePerTokenName - 1);
+        return generator.generate(UUID.randomUUID().toString());
     }
 
     @Override
@@ -95,8 +99,30 @@ public class MyBatisTransactionTokenStore implements TransactionTokenStore {
         token.setTokenName(transactionToken.getTokenName());
         token.setTokenKey(transactionToken.getTokenKey());
         token.setTokenValue(transactionToken.getTokenValue());
+        token.setSessionId(getSession().getId());
         token.setCreatedAt(dateFactory.newDate());
         tokenRepository.insert(token);
+
+        // To remind to clean the stored token when the session is invalidated
+        getSession();
     }
 
+    /**
+     * Returns {@link HttpSession} from request context<br>
+     *
+     * @return http session object
+     */
+    HttpSession getSession() {
+        return getRequest().getSession(true);
+    }
+
+    /**
+     * Returns {@link HttpServletRequest} from request context<br>
+     *
+     * @return http request in this context
+     */
+    HttpServletRequest getRequest() {
+        return ((ServletRequestAttributes) RequestContextHolder
+                .currentRequestAttributes()).getRequest();
+    }
 }
